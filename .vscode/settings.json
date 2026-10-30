@@ -1,0 +1,6 @@
+{
+  "jest.runMode": "on-demand",
+  "npm.enableScriptExplorer": true,
+  "editor.fontSize": 16,
+  "debug.console.fontSize": 15
+}

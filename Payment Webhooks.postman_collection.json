@@ -1,0 +1,107 @@
+{
+  "info": {
+    "name": "Payment Webhooks",
+    "description": "Simulates the payment provider delivering a payment.succeeded event and then retrying the same event.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Deliver payment event",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+              "pm.test('Event is credited', () => pm.expect(pm.response.json().status).to.eql('credited'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"{{event_id}}\",\n  \"type\": \"payment.succeeded\",\n  \"created\": \"2026-10-30T09:30:00Z\",\n  \"data\": {\n    \"user_id\": \"usr_002\",\n    \"amount_minor\": 200000,\n    \"currency\": \"NGN\",\n    \"reference\": \"PAY-7F3K29\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/webhooks/payments",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "webhooks",
+            "payments"
+          ]
+        },
+        "description": "First delivery of the event. Should credit the user once."
+      }
+    },
+    {
+      "name": "2. Provider retry (same event)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Retry still returns 200 so the provider stops retrying', () => pm.response.to.have.status(200));",
+              "pm.test('Retry is not credited again', () => pm.expect(pm.response.json().status).to.eql('duplicate'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"{{event_id}}\",\n  \"type\": \"payment.succeeded\",\n  \"created\": \"2026-10-30T09:30:00Z\",\n  \"data\": {\n    \"user_id\": \"usr_002\",\n    \"amount_minor\": 200000,\n    \"currency\": \"NGN\",\n    \"reference\": \"PAY-7F3K29\"\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/webhooks/payments",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "webhooks",
+            "payments"
+          ]
+        },
+        "description": "Same event ID sent again, as the provider does after a timeout. Must not credit again."
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000"
+    },
+    {
+      "key": "event_id",
+      "value": "evt_1007"
+    }
+  ]
+}

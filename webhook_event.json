@@ -1,0 +1,11 @@
+{
+  "id": "evt_1007",
+  "type": "payment.succeeded",
+  "created": "2026-10-30T09:30:00Z",
+  "data": {
+    "user_id": "usr_002",
+    "amount_minor": 200000,
+    "currency": "NGN",
+    "reference": "PAY-7F3K29"
+  }
+}

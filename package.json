@@ -1,0 +1,24 @@
+{
+  "name": "payment-service",
+  "version": "1.0.0",
+  "description": "Payment webhook service that credits user balances from payment provider events",
+  "main": "src/server.js",
+  "private": true,
+  "scripts": {
+    "start": "node src/server.js",
+    "seed": "node scripts/seed.js",
+    "test": "jest",
+    "test:report": "jest --json --outputFile=test-results.json"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.7.0",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }
+}
